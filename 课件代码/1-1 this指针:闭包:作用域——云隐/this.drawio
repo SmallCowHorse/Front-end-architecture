@@ -1,0 +1,76 @@
+<mxfile host="app.diagrams.net" modified="2023-11-26T04:15:06.193Z" agent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Safari/537.36" etag="XNEgjgE_3lCAtMtBo3lX" version="22.1.4" type="device">
+  <diagram id="wvQ66U3HLiB5DhwhfSA0" name="Page-1">
+    <mxGraphModel dx="1085" dy="653" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="ZoXHkT-nJm0IPvreCjaS-1" value="js 布局 端 技术栈" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="90" y="213" width="410" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="ZoXHkT-nJm0IPvreCjaS-2" value="必知必会" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" vertex="1" parent="1">
+          <mxGeometry x="535" y="218" width="70" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="ZoXHkT-nJm0IPvreCjaS-3" value="争取学习" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" vertex="1" parent="1">
+          <mxGeometry x="535" y="150" width="70" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="ZoXHkT-nJm0IPvreCjaS-4" value="辅助技术栈" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="90" y="130" width="200" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="ZoXHkT-nJm0IPvreCjaS-5" value="热门模块&lt;br&gt;工程化" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="300" y="130" width="200" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="ZoXHkT-nJm0IPvreCjaS-6" value="实战 ｜ 算法 ｜ 模式" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="90" y="90" width="410" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="ZoXHkT-nJm0IPvreCjaS-7" value="为我所用" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" vertex="1" parent="1">
+          <mxGeometry x="535" y="90" width="70" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="ZoXHkT-nJm0IPvreCjaS-8" value="前端个人体系" style="ellipse;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="90" y="430" width="120" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="ZoXHkT-nJm0IPvreCjaS-9" value="JS" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="270" y="310" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="ZoXHkT-nJm0IPvreCjaS-10" value="作用域 / 上下文" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="510" y="270" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="ZoXHkT-nJm0IPvreCjaS-11" value="" style="endArrow=classic;html=1;rounded=0;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="ZoXHkT-nJm0IPvreCjaS-8" target="ZoXHkT-nJm0IPvreCjaS-9">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="390" y="300" as="sourcePoint" />
+            <mxPoint x="440" y="250" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="ZoXHkT-nJm0IPvreCjaS-12" value="" style="endArrow=classic;html=1;rounded=0;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="ZoXHkT-nJm0IPvreCjaS-9" target="ZoXHkT-nJm0IPvreCjaS-10">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="390" y="300" as="sourcePoint" />
+            <mxPoint x="440" y="250" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="ZoXHkT-nJm0IPvreCjaS-13" value="异步 / promise" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="510" y="360" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="ZoXHkT-nJm0IPvreCjaS-14" value="" style="endArrow=classic;html=1;rounded=0;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="ZoXHkT-nJm0IPvreCjaS-9" target="ZoXHkT-nJm0IPvreCjaS-13">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="390" y="300" as="sourcePoint" />
+            <mxPoint x="440" y="250" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="ZoXHkT-nJm0IPvreCjaS-15" value="" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="240" y="650" width="80" height="230" as="geometry" />
+        </mxCell>
+        <mxCell id="ZoXHkT-nJm0IPvreCjaS-16" value="course" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="420" y="620" width="90" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="ZoXHkT-nJm0IPvreCjaS-17" value="session" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="420" y="650" width="90" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="ZoXHkT-nJm0IPvreCjaS-18" value="teacher" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="420" y="680" width="90" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="ZoXHkT-nJm0IPvreCjaS-19" value="stack 栈" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" vertex="1" parent="1">
+          <mxGeometry x="245" y="880" width="70" height="30" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
