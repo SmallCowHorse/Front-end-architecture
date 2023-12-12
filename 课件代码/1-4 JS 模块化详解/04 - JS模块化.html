@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+    <html>
+    <head>
+        <meta charset="UTF-8">
+        <title>JS&#x6a21;&#x5757;&#x5316;</title>
+        <style>
+/* From extension vscode.github */
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+
+.vscode-dark img[src$=\#gh-light-mode-only],
+.vscode-light img[src$=\#gh-dark-mode-only] {
+	display: none;
+}
+
+</style>
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex/dist/katex.min.css">
+<link href="https://cdn.jsdelivr.net/npm/katex-copytex@latest/dist/katex-copytex.min.css" rel="stylesheet" type="text/css">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Microsoft/vscode/extensions/markdown-language-features/media/markdown.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Microsoft/vscode/extensions/markdown-language-features/media/highlight.css">
+<style>
+            body {
+                font-family: -apple-system, BlinkMacSystemFont, 'Segoe WPC', 'Segoe UI', system-ui, 'Ubuntu', 'Droid Sans', sans-serif;
+                font-size: 14px;
+                line-height: 1.6;
+            }
+        </style>
+        <style>
+.task-list-item {
+    list-style-type: none;
+}
+
+.task-list-item-checkbox {
+    margin-left: -20px;
+    vertical-align: middle;
+    pointer-events: none;
+}
+</style>
+        
+    </head>
+    <body class="vscode-body vscode-light">
+        <h2 id="js模块化">JS模块化</h2>
+<h3 id="1-不得不说的历史">1. 不得不说的历史</h3>
+<h4 id="背景">背景</h4>
+<p>JS本身定位： 简单页面设计的支撑 —— 页面的动画 + 表单的提交
+并无模块化 or 命名空间的基础</p>
+<blockquote>
+<p>JS的模块化需求日益增长</p>
+</blockquote>
+<h4 id="幼年期无模块化-委婉的处理">幼年期：无模块化 （委婉的处理）</h4>
+<ol>
+<li>开始需要页面加载不同的js库：动画库、表单库、格式化工具</li>
+<li>多种js文件被分在不同的文件中</li>
+<li>不同的文件又被同一个模版所引用</li>
+</ol>
+<pre><code class="language-js"><span class="hljs-comment">// index.html</span>
+&lt;script src=<span class="hljs-string">&quot;tools.js&quot;</span>&gt;&lt;/script&gt;
+<span class="language-xml"><span class="hljs-tag">&lt;<span class="hljs-name">script</span> <span class="hljs-attr">src</span>=<span class="hljs-string">&quot;map.js&quot;</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span></span>
+<span class="hljs-comment">// 主</span>
+<span class="language-xml"><span class="hljs-tag">&lt;<span class="hljs-name">script</span> <span class="hljs-attr">src</span>=<span class="hljs-string">&quot;main.js&quot;</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span></span>
+</code></pre>
+<p>认可：
+文件的分离是最基础的模块化，第一步</p>
+<ul>
+<li>追问：
+script标签的两个参数 - async &amp; defer</li>
+</ul>
+<pre><code class="language-js">&lt;script src=<span class="hljs-string">&quot;tools.js&quot;</span> type=<span class="hljs-string">&quot;text/javascript&quot;</span> <span class="hljs-keyword">async</span>&gt;&lt;/script&gt;
+</code></pre>
+<p>总结：
+普通 - 解析到标签，立刻pending，并且下载同时执行
+defer - 解析到标签，开始异步下载，继续往后进行完成之后开始执行
+async - 解析到标签，开始异步下载，下载完成之后立刻执行并且阻塞继续往后解析，执行完成之后，再继续向下</p>
+<p>问题导向：浏览器渲染原理、同步异步原理、模块化加载原理</p>
+<p>问题出现</p>
+<ul>
+<li>污染全局作用域 =&gt; 不利于大型的项目开发以及多人的团队共建</li>
+</ul>
+<h4 id="成长期模块化的雏形---iife语法侧的处理">成长期：模块化的雏形 - IIFE(语法侧的处理)</h4>
+<h5 id="作用域的把控">作用域的把控</h5>
+<p>栗子：</p>
+<pre><code class="language-js">    <span class="hljs-comment">// 全局变量 =&gt; 模块内全局变量</span>
+    <span class="hljs-keyword">let</span> count = <span class="hljs-number">0</span>;
+
+    <span class="hljs-comment">// 代码块1</span>
+    <span class="hljs-keyword">const</span> <span class="hljs-title function_">increase</span> = (<span class="hljs-params"></span>) =&gt; ++count;
+
+    <span class="hljs-comment">// 代码块2</span>
+    <span class="hljs-keyword">const</span> <span class="hljs-title function_">reset</span> = (<span class="hljs-params"></span>) =&gt; {
+        count = <span class="hljs-number">0</span>;
+    }
+
+    <span class="hljs-title function_">increase</span>()
+    <span class="hljs-title function_">reset</span>()
+</code></pre>
+<p>利用函数的独立作用域</p>
+<pre><code class="language-js">    (<span class="hljs-function">() =&gt;</span> {
+        <span class="hljs-keyword">let</span> count = <span class="hljs-number">0</span>;
+        <span class="hljs-comment">// ...</span>
+    })()
+</code></pre>
+<p>定义函数 + 立即执行 =&gt; 独立的空间
+初步实现了一个最最最最最最简单的模块</p>
+<p>尝试定一个简单的模块</p>
+<pre><code class="language-js"><span class="hljs-keyword">const</span> <span class="hljs-variable language_">module</span> = (<span class="hljs-function">() =&gt;</span> {
+    <span class="hljs-keyword">let</span> count = <span class="hljs-number">0</span>;
+    <span class="hljs-keyword">return</span> {
+        <span class="hljs-attr">increase</span>: <span class="hljs-function">() =&gt;</span> ++count;
+        <span class="hljs-attr">reset</span>: <span class="hljs-function">() =&gt;</span> {
+            count = <span class="hljs-number">0</span>;
+        }
+    }
+})();
+
+<span class="hljs-variable language_">module</span>.<span class="hljs-title function_">increase</span>();
+<span class="hljs-variable language_">module</span>.<span class="hljs-title function_">reset</span>();
+
+<span class="hljs-comment">// 追问：有外部依赖的情况下，如何优化处理？</span>
+<span class="hljs-keyword">const</span> iifeModule = (<span class="hljs-function">(<span class="hljs-params">dependencyModule1, dependencyModule2</span>) =&gt;</span> {
+    <span class="hljs-keyword">let</span> count = <span class="hljs-number">0</span>;
+    <span class="hljs-comment">// dependencyModule1, dependencyModule2……</span>
+    <span class="hljs-keyword">return</span> {
+        <span class="hljs-attr">increase</span>: <span class="hljs-function">() =&gt;</span> ++count;
+        <span class="hljs-attr">reset</span>: <span class="hljs-function">() =&gt;</span> {
+            count = <span class="hljs-number">0</span>;
+        }
+    }
+})(dependencyModule1, dependencyModule2);
+
+<span class="hljs-comment">// 揭示模式</span>
+<span class="hljs-keyword">const</span> iifeModule = (<span class="hljs-function">(<span class="hljs-params">dependencyModule1, dependencyModule2</span>) =&gt;</span> {
+    <span class="hljs-keyword">let</span> count = <span class="hljs-number">0</span>;
+    <span class="hljs-comment">// dependencyModule1, dependencyModule2……</span>
+    <span class="hljs-comment">// 代码块1</span>
+    <span class="hljs-keyword">const</span> <span class="hljs-title function_">increase</span> = (<span class="hljs-params"></span>) =&gt; ++count;
+
+    <span class="hljs-comment">// 代码块2</span>
+    <span class="hljs-keyword">const</span> <span class="hljs-title function_">reset</span> = (<span class="hljs-params"></span>) =&gt; {
+        <span class="hljs-comment">// dependencyModule1</span>
+        count = <span class="hljs-number">0</span>;
+    }
+
+    <span class="hljs-keyword">return</span> {
+        increase,
+        reset
+    }
+})(dependencyModule1, dependencyModule2);
+<span class="hljs-comment">// 返回的是能力 = 使用方的传参 + 本身逻辑能力 + 依赖能力</span>
+$(<span class="hljs-string">&#x27;&#x27;</span>).<span class="hljs-title function_">attr</span>(<span class="hljs-string">&#x27;title&#x27;</span>, <span class="hljs-string">&#x27;new&#x27;</span>)
+</code></pre>
+<ul>
+<li>面试方向</li>
+<li>
+<ol>
+<li>深入模块化实现</li>
+</ol>
+</li>
+<li>
+<ol start="2">
+<li>转向框架jquery vue react模块组件实现细节，以及框架原理特征</li>
+</ol>
+</li>
+<li>
+<ol start="3">
+<li>转向设计模式 - 注重模块化的设计</li>
+</ol>
+</li>
+</ul>
+<h4 id="成熟期">成熟期</h4>
+<h5 id="cjs---commonjs">CJS - commonjs</h5>
+<blockquote>
+<p>node.js 制定的标准
+特征：</p>
+</blockquote>
+<ul>
+<li>通过module + export 去对外暴露接口</li>
+<li>通过require去调用其他模块</li>
+</ul>
+<p>模块的组织方式
+dep.js</p>
+<pre><code class="language-js">    <span class="hljs-comment">// 引入部分</span>
+    <span class="hljs-keyword">const</span> dependencyModule1 = <span class="hljs-built_in">require</span>(../dependencyModule1)
+    <span class="hljs-keyword">const</span> dependencyModule2 = <span class="hljs-built_in">require</span>(../dependencyModule2)
+
+    <span class="hljs-comment">// 核心逻辑</span>
+    <span class="hljs-keyword">let</span> count = <span class="hljs-number">0</span>
+
+    <span class="hljs-comment">// dependencyModule1, dependencyModule2……</span>
+    <span class="hljs-comment">// 代码块1</span>
+    <span class="hljs-keyword">const</span> <span class="hljs-title function_">increase</span> = (<span class="hljs-params"></span>) =&gt; ++count;
+
+    <span class="hljs-comment">// 代码块2</span>
+    <span class="hljs-keyword">const</span> <span class="hljs-title function_">reset</span> = (<span class="hljs-params"></span>) =&gt; {
+        <span class="hljs-comment">// dependencyModule1</span>
+        count = <span class="hljs-number">0</span>;
+    }
+
+    <span class="hljs-comment">// 暴露接口部分</span>
+    <span class="hljs-keyword">export</span>.<span class="hljs-property">increase</span> = increase;
+    <span class="hljs-keyword">export</span>.<span class="hljs-property">reset</span> = reset;
+
+    <span class="hljs-variable language_">module</span>.<span class="hljs-property">exports</span> = {
+        increase,
+        reset
+    }
+</code></pre>
+<pre><code class="language-js">    <span class="hljs-keyword">const</span> { increse, reset } = <span class="hljs-built_in">require</span>(<span class="hljs-string">&#x27;dep.js&#x27;</span>)
+
+    <span class="hljs-title function_">increase</span>();
+    <span class="hljs-title function_">reset</span>();
+</code></pre>
+<p>优点：</p>
+<ul>
+<li>CJS服务侧的角度解决了依赖全局污染的问题 + 完完全全地在写法上也实现了主管感受上的模块化
+缺点：</li>
+<li>针对了服务端 =&gt; 异步</li>
+</ul>
+<h4 id="amd">AMD</h4>
+<blockquote>
+<p>通过异步加载 + 允许定制回调函数
+经典的实现框架：require.js</p>
+</blockquote>
+<p>新增定义方式</p>
+<pre><code class="language-js">    <span class="hljs-comment">// 通过define来定义一个模块，然后再用require去加载</span>
+    <span class="hljs-title function_">define</span>(id, [depends], callback)
+    <span class="hljs-built_in">require</span>([<span class="hljs-variable language_">module</span>], callback)
+</code></pre>
+<pre><code class="language-js">    <span class="hljs-title function_">define</span>(<span class="hljs-string">&#x27;amdModule&#x27;</span>, [<span class="hljs-string">&#x27;dependencyModule1&#x27;</span>, <span class="hljs-string">&#x27;dependencyModule2&#x27;</span>], <span class="hljs-function">(<span class="hljs-params">dependencyModule1, dependencyModule2</span>) =&gt;</span> {
+        <span class="hljs-comment">// 业务逻辑</span>
+        <span class="hljs-keyword">let</span> count = <span class="hljs-number">0</span>
+
+        <span class="hljs-comment">// 代码块1</span>
+        <span class="hljs-keyword">const</span> <span class="hljs-title function_">increase</span> = (<span class="hljs-params"></span>) =&gt; {
+            <span class="hljs-comment">// dependencyModule2……</span>
+            ++count;
+        }
+
+        <span class="hljs-comment">// 代码块2</span>
+        <span class="hljs-keyword">const</span> <span class="hljs-title function_">reset</span> = (<span class="hljs-params"></span>) =&gt; {
+            <span class="hljs-comment">// dependencyModule1</span>
+            count = <span class="hljs-number">0</span>;
+        }
+    })
+</code></pre>
+<pre><code class="language-js">    <span class="hljs-built_in">require</span>([<span class="hljs-string">&#x27;amdModule&#x27;</span>], <span class="hljs-function"><span class="hljs-params">amdModule</span> =&gt;</span> {
+        amdModule.<span class="hljs-title function_">increse</span>();
+    })
+</code></pre>
+<p>** 面试题</p>
+<pre><code class="language-js">    <span class="hljs-title function_">define</span>(<span class="hljs-string">&#x27;amdModule&#x27;</span>, [], <span class="hljs-function"><span class="hljs-params">require</span> =&gt;</span> {
+        <span class="hljs-keyword">const</span> dependencyModule1 = <span class="hljs-built_in">require</span>(./dependencyModule1);
+        <span class="hljs-keyword">const</span> dependencyModule2 = <span class="hljs-built_in">require</span>(./dependencyModule2);
+
+        <span class="hljs-comment">// 逻辑……</span>
+    })
+</code></pre>
+<p>面试：区分CJS和AMD？手写兼容AMD&amp;CJS的模块</p>
+<!-- UMD -->
+<pre><code class="language-js">(
+    <span class="hljs-comment">// 目标：一次去定位区分CJS和AMD</span>
+    <span class="hljs-comment">// 1. CJS factory</span>
+    <span class="hljs-comment">// 2. module module.exports</span>
+    <span class="hljs-comment">// 3. define</span>
+    <span class="hljs-keyword">typeof</span> <span class="hljs-variable language_">module</span> === <span class="hljs-string">&#x27;Object&#x27;</span>
+        &amp;&amp; <span class="hljs-variable language_">module</span>.<span class="hljs-property">exports</span>
+        &amp;&amp; <span class="hljs-keyword">typeof</span> define !== <span class="hljs-string">&#x27;function&#x27;</span>
+            ? <span class="hljs-comment">// 是CJS</span>
+                <span class="hljs-function"><span class="hljs-params">factory</span> =&gt;</span> <span class="hljs-variable language_">module</span>.<span class="hljs-property">exports</span> = <span class="hljs-title function_">factory</span>(<span class="hljs-built_in">require</span>, <span class="hljs-built_in">exports</span>, <span class="hljs-variable language_">module</span>)
+            : <span class="hljs-comment">// 是AMD</span>
+                define
+)
+</code></pre>
+<p>优点：
+解决了服务、客户端异步动态依赖的问题
+缺点：
+会有引入成本，没有考虑按需加载</p>
+<h5 id="cmd规范">CMD规范</h5>
+<blockquote>
+<p>按需加载
+主要应用框架 sea.js</p>
+</blockquote>
+<pre><code class="language-js">    <span class="hljs-comment">// 依赖就近</span>
+    <span class="hljs-title function_">define</span>(<span class="hljs-string">&#x27;module&#x27;</span>, <span class="hljs-function">(<span class="hljs-params"><span class="hljs-built_in">require</span>, <span class="hljs-built_in">exports</span>, <span class="hljs-variable language_">module</span></span>) =&gt;</span> {
+        <span class="hljs-keyword">let</span> $ = <span class="hljs-built_in">require</span>(<span class="hljs-string">&#x27;map&#x27;</span>);
+        <span class="hljs-comment">// ...代码块1</span>
+
+        <span class="hljs-keyword">if</span> (xxx) {
+            <span class="hljs-keyword">return</span>;
+        }
+
+        <span class="hljs-keyword">let</span> depends2 = <span class="hljs-built_in">require</span>(<span class="hljs-string">&#x27;./dependencyModule2&#x27;</span>);
+        <span class="hljs-comment">// 代码块2</span>
+    })
+</code></pre>
+<p>优点：</p>
+<ul>
+<li>按需加载，依赖就近
+缺点：</li>
+<li>
+<ol>
+<li>依赖打包</li>
+</ol>
+</li>
+<li>
+<ol start="2">
+<li>扩大了模块内的体积</li>
+</ol>
+</li>
+</ul>
+<h5 id="完全体-esm">完全体 ESM</h5>
+<blockquote>
+<p>走进新时代</p>
+</blockquote>
+<p>新增定义：
+引入 - import
+导出 - export</p>
+<pre><code class="language-js">    <span class="hljs-comment">// 引入区域</span>
+    <span class="hljs-keyword">import</span> dependencyModule1 <span class="hljs-keyword">from</span> <span class="hljs-string">&#x27;./dependencyModule1&#x27;</span>;
+
+    <span class="hljs-comment">// 逻辑处理</span>
+    <span class="hljs-comment">// ……</span>
+
+    <span class="hljs-keyword">export</span> <span class="hljs-keyword">default</span> {
+        increase, reset
+    }
+</code></pre>
+<p>追问：
+处理动态异步依赖</p>
+<pre><code class="language-js"><span class="hljs-comment">// es方式</span>
+<span class="hljs-keyword">const</span> <span class="hljs-title function_">moduleDependency</span> = <span class="hljs-keyword">async</span> (<span class="hljs-params"></span>) =&gt; {
+    <span class="hljs-comment">// ... 模块处理</span>
+    <span class="hljs-keyword">return</span> <span class="hljs-keyword">await</span> dependencyModule1.<span class="hljs-title function_">init</span>();
+}
+
+<span class="hljs-comment">// 原生</span>
+<span class="hljs-title function_">import</span>(<span class="hljs-string">&#x27;./dependencyModule1.js&#x27;</span>).<span class="hljs-title function_">then</span>(<span class="hljs-function"><span class="hljs-params">dynamicEsModule</span> =&gt;</span> {
+    dynamicEsModule.<span class="hljs-title function_">init</span>();
+})
+</code></pre>
+<p>优点</p>
+<ul>
+<li>通过一种最统一的形态整合了所有的js的模块化</li>
+</ul>
+<h4 id="函数式编程">函数式编程</h4>
+<pre><code class="language-js">    <span class="hljs-keyword">const</span> fetch = <span class="hljs-title function_">ajax</span>(method, url, params)
+
+    <span class="hljs-keyword">const</span> fetch = ajax.<span class="hljs-title function_">get</span>(url)
+    <span class="hljs-comment">//  ajax.post(url)</span>
+
+    <span class="hljs-keyword">const</span> request = <span class="hljs-title function_">fetch</span>(params)
+    <span class="hljs-comment">// =&gt; ajax.get(url)(params)</span>
+
+    <span class="hljs-keyword">const</span> fetch = <span class="hljs-title function_">ajax</span>(method)(url)(params)
+
+    <span class="hljs-title function_">send</span>(request, fetch)
+
+    <span class="hljs-comment">// 科里化</span>
+</code></pre>
+<p>input =&gt; number-input =&gt; number + rules + 补全 + input</p>
+<p>基础 =&gt; 模块化 =&gt; 工程化</p>
+
+        <script async src="https://cdn.jsdelivr.net/npm/katex-copytex@latest/dist/katex-copytex.min.js"></script>
+        
+    </body>
+    </html>

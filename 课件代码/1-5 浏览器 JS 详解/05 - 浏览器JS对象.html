@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+    <html>
+    <head>
+        <meta charset="UTF-8">
+        <title>&#x6d4f;&#x89c8;&#x5668;&#x76f8;&#x5173;</title>
+        <style>
+/* From extension vscode.github */
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+
+.vscode-dark img[src$=\#gh-light-mode-only],
+.vscode-light img[src$=\#gh-dark-mode-only] {
+	display: none;
+}
+
+</style>
+        
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Microsoft/vscode/extensions/markdown-language-features/media/markdown.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Microsoft/vscode/extensions/markdown-language-features/media/highlight.css">
+<style>
+            body {
+                font-family: -apple-system, BlinkMacSystemFont, 'Segoe WPC', 'Segoe UI', system-ui, 'Ubuntu', 'Droid Sans', sans-serif;
+                font-size: 14px;
+                line-height: 1.6;
+            }
+        </style>
+        <style>
+.task-list-item {
+    list-style-type: none;
+}
+
+.task-list-item-checkbox {
+    margin-left: -20px;
+    vertical-align: middle;
+    pointer-events: none;
+}
+</style>
+        
+    </head>
+    <body class="vscode-body vscode-light">
+        <h2 id="浏览器相关">浏览器相关</h2>
+<h3 id="一认识浏览器运行态下的js">一、认识浏览器运行态下的JS</h3>
+<h4 id="包含bom-dom-ecmascript">包含：BOM DOM ECMAScript</h4>
+<pre><code class="language-js">    (<span class="hljs-keyword">function</span>(<span class="hljs-params">context, <span class="hljs-literal">undefined</span></span>) {
+        <span class="hljs-keyword">const</span> _class = [<span class="hljs-string">&#x27;js&#x27;</span>, <span class="hljs-string">&#x27;browser&#x27;</span>, <span class="hljs-string">&#x27;vue&#x27;</span>]
+
+        <span class="hljs-comment">// 向全局作用域中存储</span>
+        <span class="hljs-variable language_">window</span>.<span class="hljs-property">classArr</span> = _class.<span class="hljs-title function_">map</span>(<span class="hljs-function"><span class="hljs-params">item</span> =&gt;</span> item.<span class="hljs-property">key</span>)
+
+        <span class="hljs-comment">// 获取当前页面的地址</span>
+        <span class="hljs-keyword">const</span> _url = location.<span class="hljs-property">href</span>
+
+        <span class="hljs-comment">// 设置页面标题</span>
+        <span class="hljs-variable language_">document</span>.<span class="hljs-property">title</span> = <span class="hljs-string">&#x27;zhaowa class&#x27;</span>
+
+        <span class="hljs-comment">// 获取渲染节点</span>
+        <span class="hljs-variable language_">document</span>.<span class="hljs-title function_">getElementById</span>(<span class="hljs-string">&#x27;app&#x27;</span>)
+    })(<span class="hljs-variable language_">this</span>)
+
+    <span class="hljs-comment">// 简述</span>
+    <span class="hljs-comment">// ECMAScript - 基础逻辑、数据处理</span>
+    <span class="hljs-comment">// DOM - 对于浏览器视窗内HTML文本的相关操作</span>
+    <span class="hljs-comment">// BOM - 对于浏览器本身功能区域的相关操作</span>
+</code></pre>
+<h3 id="二bom">二、BOM</h3>
+<h4 id="1-location">1. location</h4>
+<p>location.href  =〉 '<a href="https://www.zhaowa.com/search?class=browser#comments">https://www.zhaowa.com/search?class=browser#comments</a>'
+.protocol =&gt; 'https:'
+.host =&gt; '<a href="http://www.zhaowa.com">www.zhaowa.com</a>'
+.origin =&gt; '<a href="https://www.zhaowa.com">https://www.zhaowa.com</a>'
+.port =&gt; '8080'
+.pathname =&gt; '/search/'
+.search =&gt; '?class=browser'
+.hash =&gt; '#comments'    // 单页路由 ｜ iframe通信</p>
+<p>location.assign('...')  // 跳转到指定的path，替换pathname的值
+.replace('...')     // 效果同上，同时替换浏览历史
+.reload()           // 刷新
+.toString()         // 产出当前地址字符串</p>
+<ul>
+<li>面试方向</li>
+</ul>
+<ol>
+<li>location本身的api操作</li>
+<li>路由相关：跳转、参数、操作 =&gt; 场景：history ｜ hash</li>
+<li>url处理 - 正则 or 手写处理</li>
+</ol>
+<h4 id="2-history">2. history</h4>
+<p>history.state =&gt; 存储当前页面的状态</p>
+<p>history.pushState()  // 流转到指定状态页面
+.replaceState()  // 替换当前状态</p>
+<ul>
+<li>面试方向 - 路由方向 history &amp; hash模式</li>
+</ul>
+<h4 id="3-navigator">3. navigator</h4>
+<ul>
+<li>浏览器系统信息大集合</li>
+</ul>
+<pre><code class="language-js">    navigator.<span class="hljs-property">userAgent</span>  <span class="hljs-comment">// 获取当前用户相关基础信息</span>
+</code></pre>
+<ul>
+<li>面试方向</li>
+</ul>
+<ol>
+<li>UA读取信息 =&gt; 数据采集、流量监控、浏览器兼容性优化……</li>
+<li>剪切板、键盘 =&gt; 如何做剪切板、监听用户键盘输入</li>
+</ol>
+<h4 id="4-screen">4. screen</h4>
+<p>表示显示区域 —— 屏幕</p>
+<ul>
+<li>
+<p>面试方向 - 判断区域大小
+window 视窗判断：
+全局入口
+window.innerHeight
+window.innerWidth</p>
+<p>文本处获取
+document.documentElement.clientHeight
+document.documentElement.clientWidth
+document.body.clientHeight
+document.body.clientWidth</p>
+<p>网页size类型 =&gt; offsetHeight = clientHeight + 边框 + 滚动条
+document.documentElement.offsetHeight
+document.documentElement.offsetWidth
+document.body.offsetHeight
+document.body.offsetWidth</p>
+<p>定位类型
+scrollLeft / scrollTop - 相对概念 距离常规位置（左上角）滚动距离
+offsetLeft / offsetTop - 距离常规位置的距离</p>
+<p>集大成者
+el.getBoundingClientRect()
+.top / .left / .bottom / .right</p>
+<ul>
+<li>兼容性 - IE会多出2px</li>
+</ul>
+</li>
+</ul>
+<h3 id="三event事件模型">三、event事件模型</h3>
+<pre><code class="language-js">    &lt;div id=<span class="hljs-string">&quot;app&quot;</span>&gt;
+        <span class="language-xml"><span class="hljs-tag">&lt;<span class="hljs-name">p</span> <span class="hljs-attr">id</span>=<span class="hljs-string">&quot;dom&quot;</span>&gt;</span>Click<span class="hljs-tag">&lt;/<span class="hljs-name">p</span>&gt;</span></span>
+    &lt;/div&gt;
+
+    <span class="hljs-comment">// 冒泡 - ms：p =&gt; div =&gt; body =&gt; HTML =&gt; document</span>
+    <span class="hljs-comment">// 捕获 - ns：document =&gt; HTML =&gt; body =&gt; div =&gt; p</span>
+
+    el.<span class="hljs-title function_">addEventListener</span>(event, <span class="hljs-keyword">function</span>, useCapture) <span class="hljs-comment">// useCapture 默认 - false</span>
+
+    <span class="hljs-comment">// 追问</span>
+    <span class="hljs-comment">// 1. 如何阻止事件的传播</span>
+    event.<span class="hljs-title function_">stopPropgation</span>()
+    <span class="hljs-comment">// 注意：无论向上还是向下都是可以阻止 =&gt; 无法阻止默认事件的发生</span>
+
+    <span class="hljs-comment">// 2. 如何阻止默认事件传播</span>
+    event.<span class="hljs-title function_">prevenDefault</span>()
+
+    <span class="hljs-comment">// 3. 如何阻止相同节点绑定多个同类事件 =&gt; 兼容 &amp; 性能</span>
+    event.<span class="hljs-title function_">stopImmediatePropagation</span>()
+
+    <span class="hljs-comment">// 4. 手写，实现一个多浏览器兼容的事件绑定</span>
+    <span class="hljs-comment">// attchEvent vs addEventListener</span>
+    <span class="hljs-comment">// 区别：</span>
+    <span class="hljs-comment">// a. 传参，attachEvent对于事件名需要加上一个‘on’</span>
+    <span class="hljs-comment">// b. 执行顺序， attachEvent - 后绑定先执行；addEventListener - 先绑定先执行</span>
+    <span class="hljs-comment">// c. 解绑 detachEvent vs removeEventListener</span>
+    <span class="hljs-comment">// d. 阻断 e.cancelBubble = true vs e.stopPropagation()</span>
+    <span class="hljs-comment">// e. 阻断默认事件 e.returnValue vs e.preventDefault</span>
+
+    <span class="hljs-keyword">class</span> <span class="hljs-title class_">bindEvent</span> {
+        <span class="hljs-title function_">constructor</span>(<span class="hljs-params">element</span>) {
+            <span class="hljs-variable language_">this</span>.<span class="hljs-property">element</span> = element;
+        }
+        addEventListener = <span class="hljs-function">(<span class="hljs-params">type, handler</span>) =&gt;</span> {
+            <span class="hljs-keyword">if</span> (<span class="hljs-variable language_">this</span>.<span class="hljs-property">element</span>.<span class="hljs-property">addEventListener</span>) {
+                <span class="hljs-variable language_">this</span>.<span class="hljs-property">element</span>.<span class="hljs-title function_">addEventListener</span>(type, handler, <span class="hljs-literal">false</span>);
+            } <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (<span class="hljs-variable language_">this</span>.<span class="hljs-property">element</span>.<span class="hljs-property">attachEvent</span>) {
+                <span class="hljs-keyword">const</span> element = <span class="hljs-variable language_">this</span>.<span class="hljs-property">element</span>;
+                <span class="hljs-variable language_">this</span>.<span class="hljs-property">element</span>.<span class="hljs-title function_">attachEvent</span>(<span class="hljs-string">&#x27;on&#x27;</span> + type, <span class="hljs-function">() =&gt;</span> {
+                    handler.<span class="hljs-title function_">call</span>(element);
+                })
+            } <span class="hljs-keyword">else</span> {
+                <span class="hljs-variable language_">this</span>.<span class="hljs-property">element</span>[<span class="hljs-string">&#x27;on&#x27;</span> + type] = handler;
+            }
+        }
+        removeEventListener = <span class="hljs-function">(<span class="hljs-params">type, handler</span>) =&gt;</span> {
+            <span class="hljs-keyword">if</span> (<span class="hljs-variable language_">this</span>.<span class="hljs-property">element</span>.<span class="hljs-property">removeEventListener</span>) {
+                <span class="hljs-variable language_">this</span>.<span class="hljs-property">element</span>.<span class="hljs-title function_">removeEventListener</span>(type, handler, <span class="hljs-literal">false</span>);
+            } <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (<span class="hljs-variable language_">this</span>.<span class="hljs-property">element</span>.<span class="hljs-property">detachEvent</span>) {
+                <span class="hljs-variable language_">this</span>.<span class="hljs-property">element</span>.<span class="hljs-title function_">detachEvent</span>(<span class="hljs-string">&#x27;on&#x27;</span> + type, handler)
+            } <span class="hljs-keyword">else</span> {
+                <span class="hljs-variable language_">this</span>.<span class="hljs-property">element</span>[<span class="hljs-string">&#x27;on&#x27;</span> + type] = <span class="hljs-literal">null</span>;
+            }
+        }
+        <span class="hljs-keyword">static</span> <span class="hljs-title function_">stopPropagation</span>(<span class="hljs-params">e</span>) {
+            <span class="hljs-keyword">if</span> (e.<span class="hljs-property">stopPropagation</span>) {
+                e.<span class="hljs-title function_">stopPropagation</span>();
+            } <span class="hljs-keyword">else</span> {
+                e.<span class="hljs-property">cancelBubble</span> = <span class="hljs-literal">true</span>;
+            }
+        }
+        <span class="hljs-keyword">static</span> <span class="hljs-title function_">preventDefault</span>(<span class="hljs-params">e</span>) {
+            <span class="hljs-keyword">if</span> (e.<span class="hljs-property">preventDefault</span>) {
+                e.<span class="hljs-title function_">preventDefault</span>();
+            } <span class="hljs-keyword">else</span> {
+                e.<span class="hljs-property">returnValue</span> = <span class="hljs-literal">false</span>;
+            }
+        }
+    }
+
+    <span class="hljs-comment">// 5. 性能 - 事件代理</span>
+    &lt;ul <span class="hljs-keyword">class</span>=<span class="hljs-string">&#x27;list&#x27;</span>&gt;
+        <span class="language-xml"><span class="hljs-tag">&lt;<span class="hljs-name">li</span>&gt;</span>1<span class="hljs-tag">&lt;/<span class="hljs-name">li</span>&gt;</span></span>
+        <span class="language-xml"><span class="hljs-tag">&lt;<span class="hljs-name">li</span>&gt;</span>2<span class="hljs-tag">&lt;/<span class="hljs-name">li</span>&gt;</span></span>
+        <span class="language-xml"><span class="hljs-tag">&lt;<span class="hljs-name">li</span>&gt;</span>3<span class="hljs-tag">&lt;/<span class="hljs-name">li</span>&gt;</span></span>
+        <span class="language-xml"><span class="hljs-tag">&lt;<span class="hljs-name">li</span>&gt;</span>4<span class="hljs-tag">&lt;/<span class="hljs-name">li</span>&gt;</span></span>
+        <span class="language-xml"><span class="hljs-tag">&lt;<span class="hljs-name">li</span>&gt;</span>5<span class="hljs-tag">&lt;/<span class="hljs-name">li</span>&gt;</span></span>
+        <span class="language-xml"><span class="hljs-tag">&lt;<span class="hljs-name">li</span>&gt;</span>6<span class="hljs-tag">&lt;/<span class="hljs-name">li</span>&gt;</span></span>
+        <span class="language-xml"><span class="hljs-tag">&lt;<span class="hljs-name">li</span>&gt;</span>7<span class="hljs-tag">&lt;/<span class="hljs-name">li</span>&gt;</span></span>
+    &lt;/ul&gt;
+    <span class="language-xml"><span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">class</span>=<span class="hljs-string">&quot;content&quot;</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span></span>
+
+    <span class="hljs-keyword">var</span> list = <span class="hljs-variable language_">document</span>.<span class="hljs-title function_">querySelector</span>(<span class="hljs-string">&#x27;.list&#x27;</span>)
+    <span class="hljs-keyword">var</span> li = list.<span class="hljs-title function_">getElementsByTagName</span>(<span class="hljs-string">&#x27;li&#x27;</span>)
+    <span class="hljs-keyword">var</span> content = <span class="hljs-variable language_">document</span>.<span class="hljs-title function_">querySeletor</span>(<span class="hljs-string">&#x27;.content&#x27;</span>)
+
+    <span class="hljs-comment">// 硬碰硬</span>
+    <span class="hljs-keyword">for</span> (<span class="hljs-keyword">var</span> n = <span class="hljs-number">0</span>; n &lt; li.<span class="hljs-property">length</span>; n++) {
+        li[n].<span class="hljs-title function_">addEventListener</span>(<span class="hljs-string">&#x27;click&#x27;</span>, <span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) {
+            <span class="hljs-comment">// 业务逻辑</span>
+        })
+    }
+
+    <span class="hljs-comment">// 代理后 - 利用冒泡</span>
+    <span class="hljs-keyword">function</span> <span class="hljs-title function_">onClick</span>(<span class="hljs-params">e</span>) {
+        <span class="hljs-keyword">var</span> e = e || <span class="hljs-variable language_">window</span>.<span class="hljs-property">event</span>
+        <span class="hljs-keyword">if</span> (e.<span class="hljs-property">target</span>.<span class="hljs-property">nodeName</span>.<span class="hljs-title function_">toLowerCase</span>()===<span class="hljs-string">&#x27;li&#x27;</span>) {
+            <span class="hljs-keyword">const</span> liList = <span class="hljs-variable language_">this</span>.<span class="hljs-title function_">querySelector</span>(<span class="hljs-string">&#x27;li&#x27;</span>)
+            index = <span class="hljs-title class_">Array</span>.<span class="hljs-property"><span class="hljs-keyword">prototype</span></span>.<span class="hljs-property">indexOf</span>.<span class="hljs-title function_">call</span>(liList, target)
+        }
+    }
+    list.<span class="hljs-title function_">addEventListener</span>(<span class="hljs-string">&#x27;click&#x27;</span>, onClick, <span class="hljs-literal">false</span>)
+</code></pre>
+<h3 id="网络层">网络层</h3>
+<pre><code class="language-js"><span class="hljs-comment">// 实例化</span>
+<span class="hljs-keyword">const</span> xhr = <span class="hljs-keyword">new</span> <span class="hljs-title class_">XMLHttpRequest</span>()
+
+<span class="hljs-comment">// 初始化连接</span>
+xhr.<span class="hljs-title function_">open</span>(method, url, <span class="hljs-keyword">async</span>)
+
+<span class="hljs-comment">// send发送请求</span>
+xhr.<span class="hljs-title function_">send</span>(data) <span class="hljs-comment">// data - encodeURIComponent</span>
+
+<span class="hljs-comment">// 接收</span>
+xhr.<span class="hljs-property">readyStatus</span>
+<span class="hljs-comment">// 0 - 尚未调用open方法</span>
+<span class="hljs-comment">// 1 - 已经调用了open</span>
+<span class="hljs-comment">// 2 - 已经send</span>
+<span class="hljs-comment">// 3 - 已经收到请求的返回数据了</span>
+<span class="hljs-comment">// 4 - 请求已完成</span>
+xhr.<span class="hljs-property">onreadystatechange</span> = <span class="hljs-function">() =&gt;</span> {
+    <span class="hljs-keyword">if</span> (xhr.<span class="hljs-property">readyStatus</span> === <span class="hljs-number">4</span>) {
+        <span class="hljs-keyword">if</span> (xhr.<span class="hljs-property">status</span> &gt;= <span class="hljs-number">200</span> &amp;&amp; xhr.<span class="hljs-property">status</span> &lt; <span class="hljs-number">300</span> || xhr.<span class="hljs-property">status</span> == <span class="hljs-number">304</span>) {
+            <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">&#x27;success&#x27;</span>, xhr.<span class="hljs-property">responseText</span>)
+        }
+    }
+}
+
+<span class="hljs-comment">// 超时时间</span>
+xhr.<span class="hljs-property">timeout</span> = <span class="hljs-number">1000</span>
+
+xhr.<span class="hljs-property">ontimeout</span> = <span class="hljs-function">() =&gt;</span> {
+    <span class="hljs-comment">// 超时操作</span>
+}
+</code></pre>
+<ul>
+<li>面试方向</li>
+<li>
+<ol>
+<li>RESTFUL - GET POST PUT DELETE</li>
+</ol>
+</li>
+<li>
+<ol start="2">
+<li>跨域 - CORS、JSONP</li>
+</ol>
+</li>
+<li>
+<ol start="3">
+<li>状态码 =&gt; 浏览器缓存 =&gt; 强缓存 + 协商缓存</li>
+</ol>
+</li>
+</ul>
+<h3 id="五浏览器执行">五、浏览器执行</h3>
+<p>URL =&gt; 获取到具体节点 =&gt; 文档load =&gt; JS CSS document =&gt; DOM | CSSOM | JS逻辑
+=&gt; render tree = DOM + CSSOM | JS
+=&gt; LAYOUT tree
+=&gt; paint</p>
+<ul>
+<li>面试：重排 重绘
+避免反复重排、减少重绘</li>
+</ul>
+<p>JS =&gt; module =&gt; system
+browser
+page =&gt; application</p>
+
+        
+        
+    </body>
+    </html>
