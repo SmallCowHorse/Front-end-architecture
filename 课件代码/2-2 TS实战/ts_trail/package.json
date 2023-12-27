@@ -1,0 +1,19 @@
+{
+  "name": "ts_trail",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.ts",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "dev": "tsc && node ./dist/index.js"
+  },
+  "author": "hayato",
+  "license": "ISC",
+  "dependencies": {
+    "reflect-metadata": "^0.1.13",
+    "tsc": "^2.0.4",
+    "typescript": "^5.1.6"
+  }
+}

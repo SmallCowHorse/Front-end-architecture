@@ -42,7 +42,7 @@ git reset --hard commit_id
 
 ### 版本回退快捷指令
 
-git reset --hard HEAD^ 
+git reset --hard HEAD^
 
 【注：HEAD是指向当前版本的指针，HEAD^表示上个版本,HEAD^^表示上上个版本】
 
@@ -71,3 +71,7 @@ git stash
 ### 从缓存区中取回代码
 
 git stash pop
+
+### 取消某一次提交
+
+git revert <指定的版本号>

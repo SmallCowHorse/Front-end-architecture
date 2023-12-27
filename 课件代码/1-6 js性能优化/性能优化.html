@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+    <html>
+    <head>
+        <meta charset="UTF-8">
+        <title>&#x6027;&#x80fd;&#x4f18;&#x5316;&#x8fdb;&#x9636;</title>
+        <style>
+/* From extension vscode.github */
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+
+.vscode-dark img[src$=\#gh-light-mode-only],
+.vscode-light img[src$=\#gh-dark-mode-only] {
+	display: none;
+}
+
+</style>
+        
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Microsoft/vscode/extensions/markdown-language-features/media/markdown.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Microsoft/vscode/extensions/markdown-language-features/media/highlight.css">
+<style>
+            body {
+                font-family: -apple-system, BlinkMacSystemFont, 'Segoe WPC', 'Segoe UI', system-ui, 'Ubuntu', 'Droid Sans', sans-serif;
+                font-size: 14px;
+                line-height: 1.6;
+            }
+        </style>
+        <style>
+.task-list-item {
+    list-style-type: none;
+}
+
+.task-list-item-checkbox {
+    margin-left: -20px;
+    vertical-align: middle;
+    pointer-events: none;
+}
+</style>
+        
+    </head>
+    <body class="vscode-body vscode-light">
+        <pre><code class="language-js"><span class="hljs-keyword">var</span> a
+<span class="hljs-keyword">var</span> b
+{
+    a = <span class="hljs-number">5</span>
+    b = <span class="hljs-number">3</span>
+    <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">&#x27;a:&#x27;</span>, a, <span class="hljs-string">&#x27;window.a:&#x27;</span>, <span class="hljs-variable language_">window</span>.<span class="hljs-property">a</span>)
+    <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">&#x27;b:&#x27;</span>, b, <span class="hljs-string">&#x27;window.b:&#x27;</span>, <span class="hljs-variable language_">window</span>.<span class="hljs-property">b</span>)
+    <span class="hljs-keyword">function</span> <span class="hljs-title function_">a</span>(<span class="hljs-params"></span>) {}
+    <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">&#x27;a:&#x27;</span>, a, <span class="hljs-string">&#x27;window.a:&#x27;</span>, <span class="hljs-variable language_">window</span>.<span class="hljs-property">a</span>)
+    a = {}
+    <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">&#x27;a:&#x27;</span>, a, <span class="hljs-string">&#x27;window.a:&#x27;</span>, <span class="hljs-variable language_">window</span>.<span class="hljs-property">a</span>)
+}
+<span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">&#x27;a:&#x27;</span>, a)
+<span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">&#x27;b:&#x27;</span>, b)
+</code></pre>
+<h3 id="性能优化进阶">性能优化进阶</h3>
+<h4 id="navigation-timing-api">Navigation Timing API</h4>
+<ol>
+<li>unloadEventStart / End - 前一个页面unload的时间戳
+=&gt; 无前置页面？ =&gt; 值为0
+=&gt; 前置页面域不同？ =&gt; 值为0</li>
+<li>redirectStart / End - 第一个页面重定向发生的事件 / 最后一个页面重定向完成的时间</li>
+<li>fetchStart / End - 浏览器用于准备使用网络抓取文档的事件</li>
+<li>domainLookupStart / End - 开始 / 重新建立连接的事件
+=&gt; 只是建立
+=&gt; 如果是长连接 =&gt; 值等于fetchStart</li>
+<li>connectStart / end - TCP建立握手的开始、完成</li>
+<li>secureConnectionStart - HTTPS连接建立的时间</li>
+<li>requestStart / End - 请求发起的真实时间
+=&gt; 包含了本地缓存数据的读取</li>
+<li>responsStart / End - 回包的真实时间
+=&gt; 包含了本地缓存数据的读取</li>
+<li>domLoading - 开始解析渲染DOM树 =&gt; 抛出readystatechange事件</li>
+<li>domInteractive - 完成DOM树的解析 =&gt; 抛出readystatechange事件</li>
+<li>domComplete - 整个DOM完成渲染 =&gt; 抛出readystatechange事件</li>
+<li>loadEventStart / End - load事件触发以及load回调完成</li>
+</ol>
+<pre><code class="language-js">    &lt;script&gt;
+        <span class="hljs-attr">javascript</span>:(<span class="hljs-function">() =&gt;</span> {
+            <span class="hljs-keyword">var</span> perfData = <span class="hljs-variable language_">window</span>.<span class="hljs-property">performance</span>.<span class="hljs-property">timing</span>;
+            <span class="hljs-keyword">var</span> pageLoadTime = perfData.<span class="hljs-property">loadEventEnd</span> - perfData.<span class="hljs-property">navigationStart</span>;
+
+            {<span class="hljs-comment">/* window.trace(&#x27;当前页面加载耗时：&#x27;, pageLoadTime, &#x27;ms&#x27;); */</span>}
+            <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">&#x27;当前页面加载耗时：&#x27;</span>, pageLoadTime);
+        })();
+    &lt;/script&gt;
+</code></pre>
+<h4 id="core-web-vitals---网页性能的核心指标">Core Web Vitals - 网页性能的核心指标</h4>
+<ul>
+<li>Google提出 =&gt; 可衡量的、能够反映真实用户体验的：加载、交互、视觉稳定性</li>
+</ul>
+<h5 id="lcp---largest-contentful-paint-衡量装载性能">LCP - Largest Contentful Paint 衡量装载性能</h5>
+<ul>
+<li>前2.5s内进行最大内容的渲染</li>
+</ul>
+<p>a. 最大内容包含了哪些？</p>
+<ul>
+<li><img>元素</li>
+<li><video>元素</li>
+<li><svg>元素</li>
+<li>通过url()函数加载的背景图片</li>
+<li>包含了文本整体节点的块级元素</li>
+</ul>
+<p>b. LCP值低下的原因</p>
+<ul>
+<li>服务器响应慢</li>
+<li>阻断渲染的JS</li>
+<li>资源加载慢</li>
+<li>客户端渲染机器性能影响</li>
+</ul>
+<p>c. 针对性地改造</p>
+<ul>
+<li>服务器优化 =&gt; 缓存代理</li>
+<li>JS进行拆分 or 后置 =&gt; webassembly</li>
+<li>对资源进行优化 JPG WEBP =&gt; 降低资源大小 =&gt; 加快请求速度</li>
+<li>利用工程化方式 =&gt; HTML进行动态组装、压缩、首屏优化、worker、服务端渲染</li>
+</ul>
+<h5 id="fid---first-input-delay">FID - First Input Delay</h5>
+<p>衡量交互性</p>
+<ul>
+<li>页面首次输入的延迟应该小于100ms</li>
+</ul>
+<p>a. 减少后置任务对交互行为的阻塞影响</p>
+<ul>
+<li>延迟不需要紧急处理的JS逻辑</li>
+<li>减少不必要的polyfill</li>
+</ul>
+<p>b. 分解耗时的任务</p>
+<ul>
+<li>任何阻塞主线程超过50ms =&gt; 长任务</li>
+<li>长任务优选拆分成较小的异步任务</li>
+</ul>
+<p>c. worker</p>
+<h5 id="cls---cumulative-layout-shift">CLS - cumulative layout shift</h5>
+<p>衡量视觉稳定性 =&gt; CLS页面应当保持在小于0.1</p>
+<ul>
+<li>布局的移动可能发生在元素的前一帧到下一帧的改变位置</li>
+</ul>
+<p>a. 不要去使用无尺寸元素 - 默认宽高与最终一致
+b. 减少页面内容的插入 =&gt; 影响整体布局 =&gt; 重排
+c. 字体控制 关注</p>
+<h4 id="cwv工具---core-web-vitals-annotations">CWV工具 - core web vitals annotations</h4>
+<h4 id="基石---performance">基石 - performance</h4>
+<h4 id="优化的另一种可能---bigpipe--将页面分解成若干的pagelet">优化的另一种可能 - bigpipe —— 将页面分解成若干的pagelet</h4>
+<ol>
+<li>服务前端接收来自客户端的http请求</li>
+<li>存储层去获取数据 =&gt; 组装HTML =&gt; 响应给客户端</li>
+</ol>
+
+        
+        
+    </body>
+    </html>

@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+    <html>
+    <head>
+        <meta charset="UTF-8">
+        <title>&#x51fd;&#x6570;&#x5f0f;</title>
+        <style>
+/* From extension vscode.github */
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+
+.vscode-dark img[src$=\#gh-light-mode-only],
+.vscode-light img[src$=\#gh-dark-mode-only] {
+	display: none;
+}
+
+</style>
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex/dist/katex.min.css">
+<link href="https://cdn.jsdelivr.net/npm/katex-copytex@latest/dist/katex-copytex.min.css" rel="stylesheet" type="text/css">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Microsoft/vscode/extensions/markdown-language-features/media/markdown.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Microsoft/vscode/extensions/markdown-language-features/media/highlight.css">
+<style>
+            body {
+                font-family: -apple-system, BlinkMacSystemFont, 'Segoe WPC', 'Segoe UI', system-ui, 'Ubuntu', 'Droid Sans', sans-serif;
+                font-size: 14px;
+                line-height: 1.6;
+            }
+        </style>
+        <style>
+.task-list-item {
+    list-style-type: none;
+}
+
+.task-list-item-checkbox {
+    margin-left: -20px;
+    vertical-align: middle;
+    pointer-events: none;
+}
+</style>
+        
+    </head>
+    <body class="vscode-body vscode-light">
+        <h3 id="函数式">函数式</h3>
+<h4 id="一函数式编程的出现">一、函数式编程的出现</h4>
+<ul>
+<li>发展历程：
+<ol>
+<li>命令式编程 =&gt; 以一行代码为单元，逐步执行</li>
+<li>面向对象编程 =&gt; 以对象为操作单位</li>
+<li>函数式编程 =&gt; 函数为王</li>
+</ol>
+</li>
+</ul>
+<h4 id="1-问题的出现---从一道面试题说起">1. 问题的出现 - 从一道面试题说起</h4>
+<pre><code class="language-js">    <span class="hljs-comment">// 面试题：上接浏览器原理 - 参数parse</span>
+    <span class="hljs-comment">// 1. url中参数式如何展示数组的？</span>
+    <span class="hljs-comment">// location.search =&gt; &#x27;?name[]=progressive$%coding&amp;name[]=objective$%coding&amp;name[]=functional$%coding&#x27;</span>
+    <span class="hljs-comment">// 2. 参数提取拼接数组</span>
+    <span class="hljs-comment">// [&#x27;progressive$%coding&#x27;, &#x27;objective$%coding&#x27;, &#x27;functional$%coding&#x27;]</span>
+    <span class="hljs-comment">// 3. 转换成数组对象做存储 + 字符串处理</span>
+    <span class="hljs-comment">// [{name: &#x27;Progressive Coding&#x27;}, {name: &#x27;Objective Coding&#x27;}, {name: &#x27;Functional Coding&#x27;}]</span>
+
+    <span class="hljs-comment">// 解：</span>
+    <span class="hljs-comment">// 1. 字符串拆分数组 遍历</span>
+    <span class="hljs-comment">// 2. 字符串 =&gt; key value 遍历</span>
+
+    <span class="hljs-keyword">const</span> _array = [<span class="hljs-string">&#x27;progressive$%coding&#x27;</span>, <span class="hljs-string">&#x27;objective$%coding&#x27;</span>, <span class="hljs-string">&#x27;functional$%coding&#x27;</span>];
+    <span class="hljs-keyword">const</span> _objArr = [];
+    <span class="hljs-keyword">const</span> <span class="hljs-title function_">nameParser</span> = (<span class="hljs-params">array, objArr</span>) =&gt; {
+        <span class="hljs-comment">// 对于数组的处理部分</span>
+        array.<span class="hljs-title function_">forEach</span>(<span class="hljs-function"><span class="hljs-params">item</span> =&gt;</span> {
+            <span class="hljs-keyword">let</span> names = item.<span class="hljs-title function_">split</span>(<span class="hljs-string">&#x27;$%&#x27;</span>);
+            <span class="hljs-keyword">let</span> newName = [];
+
+            <span class="hljs-comment">// 对于name进行处理</span>
+            names.<span class="hljs-title function_">forEach</span>(<span class="hljs-function"><span class="hljs-params">name</span> =&gt;</span> {
+                <span class="hljs-keyword">let</span> nameItem = name[<span class="hljs-number">0</span>].<span class="hljs-title function_">toUpperCase</span>() + name[<span class="hljs-number">1</span>].<span class="hljs-title function_">slice</span>(<span class="hljs-number">1</span>);
+
+                newName.<span class="hljs-title function_">push</span>(nameItem);
+            })
+            objArr.<span class="hljs-title function_">push</span>({
+                <span class="hljs-attr">name</span>: newName.<span class="hljs-title function_">join</span>(<span class="hljs-string">&#x27; &#x27;</span>);
+            })
+        })
+        <span class="hljs-keyword">return</span> objArr;
+    }
+
+    <span class="hljs-comment">// 问题：</span>
+    <span class="hljs-comment">// 1. 过程中存在逻辑包裹 - 看完争端逻辑才明白在做什么</span>
+    <span class="hljs-comment">// 2. 存在临时变量，收尾封闭 - 迭代拓展难度较高</span>
+</code></pre>
+<h4 id="解决方案">解决方案</h4>
+<pre><code class="language-js">    <span class="hljs-comment">// step1. 需求分析 =&gt; 数组 &gt; 数组对象 =&gt; [字符串 &gt; 对象]</span>
+    <span class="hljs-comment">// nameParser =&gt; [objHelper :: string &gt; object]</span>
+
+    <span class="hljs-comment">// step2. 功能明确 =&gt; objHelper = formatName + assembleObj</span>
+
+    <span class="hljs-comment">// step3. 功能拆分 =&gt; objHelper = [(split + capitalize + join)] + assembleObj</span>
+
+    <span class="hljs-comment">// step4. 代码实现</span>
+    <span class="hljs-keyword">const</span> _array = [<span class="hljs-string">&#x27;progressive$%coding&#x27;</span>, <span class="hljs-string">&#x27;objective$%coding&#x27;</span>, <span class="hljs-string">&#x27;functional$%coding&#x27;</span>];
+
+    <span class="hljs-comment">// 原子操作</span>
+    <span class="hljs-keyword">const</span> <span class="hljs-title function_">assembleObj</span> = (<span class="hljs-params">key, x</span>) =&gt; {
+        <span class="hljs-keyword">let</span> obj = {};
+
+        obj[key] = x;
+        <span class="hljs-keyword">return</span> obj;
+    }
+
+    <span class="hljs-keyword">const</span> <span class="hljs-title function_">capitalize</span> = str =&gt; str[<span class="hljs-number">0</span>].<span class="hljs-title function_">toUpperCase</span>() + str.<span class="hljs-title function_">slice</span>(<span class="hljs-number">1</span>);
+
+    <span class="hljs-comment">// 声明结构 - 组合 - ramda</span>
+    <span class="hljs-keyword">const</span> formatName = R.<span class="hljs-title function_">merge</span>(<span class="hljs-title function_">join</span>(<span class="hljs-string">&#x27; &#x27;</span>), <span class="hljs-title function_">map</span>(capitalize), <span class="hljs-title function_">split</span>(<span class="hljs-string">&#x27;$%&#x27;</span>));
+    <span class="hljs-keyword">const</span> objHelper = R.<span class="hljs-title function_">merge</span>(<span class="hljs-title function_">assembleObj</span>(<span class="hljs-string">&#x27;name&#x27;</span>), formatName);
+    <span class="hljs-keyword">const</span> nameParser = <span class="hljs-title function_">map</span>(objHelper);
+
+    <span class="hljs-title function_">nameParser</span>(_array);
+    <span class="hljs-comment">// 函数是一等公民 =&gt; 万物皆函数</span>
+</code></pre>
+<h3 id="二函数式编程的原理特点">二、函数式编程的原理特点</h3>
+<h4 id="1-什么是函数式的原理">1. 什么是函数式的原理</h4>
+<ul>
+<li>加法结合律 ｜ 因式分解 ｜ 完全平方公式 =&gt; 原子组合的变化 d = a + b + c = (a + b) + c</li>
+<li>水源 =&gt; 组合（水管 + 弯头 + 开关） =&gt; 花洒</li>
+</ul>
+<h4 id="2-理论思想">2. 理论思想</h4>
+<h5 id="a-一等公民---函数--1-逻辑功能的落脚点--函数-2-实现函数--拼接流程">a. 一等公民 - 函数 =&gt; 1. 逻辑功能的落脚点 —— 函数 2. 实现函数 + 拼接流程</h5>
+<h5 id="b-声明式--声明需求--更贴近于语言习惯">b. 声明式 =&gt; 声明需求 —— 更贴近于语言习惯</h5>
+<h5 id="c-惰性执行---无缝衔接-性能节约">c. 惰性执行 - 无缝衔接 性能节约</h5>
+<pre><code class="language-js">    <span class="hljs-comment">// 惰性函数</span>
+    <span class="hljs-keyword">const</span> <span class="hljs-title function_">program</span> = name =&gt; {
+        <span class="hljs-keyword">if</span> (name === <span class="hljs-string">&#x27;progressive&#x27;</span>) {
+            <span class="hljs-keyword">return</span> program = <span class="hljs-function">() =&gt;</span> {
+                <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">&#x27;this is progressive&#x27;</span>)
+            }
+        } 
+        <span class="hljs-keyword">if</span> (name === <span class="hljs-string">&#x27;objective&#x27;</span>) {
+            <span class="hljs-keyword">return</span> program = <span class="hljs-function">() =&gt;</span> {
+                <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">&#x27;this is objective&#x27;</span>)
+            }
+        } 
+        <span class="hljs-keyword">if</span> (name === <span class="hljs-string">&#x27;functional&#x27;</span>) {
+            <span class="hljs-keyword">return</span> program = <span class="hljs-function">() =&gt;</span> {
+                <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">&#x27;this is functional&#x27;</span>)
+            }
+        }
+    }
+
+    <span class="hljs-title function_">program</span>(<span class="hljs-string">&#x27;progressive&#x27;</span>)();
+    <span class="hljs-title function_">program</span>();
+</code></pre>
+<h4 id="3-无状态与无副作用">3. 无状态与无副作用</h4>
+<ul>
+<li>a. 无状态 - 幂等；数据不可变 - 不可操作改变源数据</li>
+<li>b. 无副作用 - 函数内部不可直接对系统中任何全局变量做直接操作</li>
+</ul>
+<h3 id="三实际开发">三、实际开发</h3>
+<h4 id="1-纯函数的改造">1. 纯函数的改造</h4>
+<pre><code class="language-js">    <span class="hljs-keyword">const</span> _class = {
+        <span class="hljs-attr">name</span>: <span class="hljs-string">&#x27;objective&#x27;</span>
+    }
+
+    <span class="hljs-comment">// 函数的内部引入了外部变量 - 副作用</span>
+    <span class="hljs-keyword">const</span> <span class="hljs-title function_">score</span> = str =&gt; _class.<span class="hljs-property">name</span> + <span class="hljs-string">&#x27;:&#x27;</span> + str;
+    <span class="hljs-comment">// 修改了传入参数 - 有状态</span>
+    <span class="hljs-keyword">const</span> <span class="hljs-title function_">changeClass</span> = (<span class="hljs-params">obj, name</span>) =&gt; obj.<span class="hljs-property">name</span> = name;
+
+    <span class="hljs-title function_">changeClass</span>(_class, <span class="hljs-string">&#x27;functional&#x27;</span>);
+    <span class="hljs-title function_">score</span>(<span class="hljs-string">&#x27;good&#x27;</span>);
+
+    <span class="hljs-comment">// #################</span>
+    <span class="hljs-keyword">import</span> _ <span class="hljs-keyword">from</span> <span class="hljs-string">&#x27;lodash&#x27;</span>;
+
+    <span class="hljs-keyword">const</span> _class = {
+        <span class="hljs-attr">name</span>: <span class="hljs-string">&#x27;objective&#x27;</span>
+    }
+
+    <span class="hljs-comment">// 函数的内部引入了外部变量 - 副作用</span>
+    <span class="hljs-keyword">const</span> <span class="hljs-title function_">score</span> = (<span class="hljs-params">obj, str</span>) =&gt; _.<span class="hljs-title function_">deepClone</span>(obj).<span class="hljs-property">name</span> + <span class="hljs-string">&#x27;:&#x27;</span> + str;
+
+    <span class="hljs-comment">// 函数 =&gt; 原子库</span>
+</code></pre>
+<h4 id="2-流水线的组装---加工--组装">2. 流水线的组装 - 加工 &amp; 组装</h4>
+<h5 id="a-加工---科里化">a. 加工 - 科里化</h5>
+<pre><code class="language-js">    <span class="hljs-comment">// f(x, y, z) =&gt; f(x)(y)(z)</span>
+    <span class="hljs-keyword">const</span> <span class="hljs-title function_">sum</span> = (<span class="hljs-params">x, y</span>) =&gt; {
+        <span class="hljs-keyword">return</span> x + y;
+    }
+    <span class="hljs-title function_">sum</span>(<span class="hljs-number">1</span>, <span class="hljs-number">1</span>);
+
+    <span class="hljs-keyword">const</span> <span class="hljs-title function_">add</span> = x =&gt; {
+        <span class="hljs-keyword">return</span> <span class="hljs-function"><span class="hljs-params">y</span> =&gt;</span> {
+            <span class="hljs-keyword">return</span> x + y;
+        }
+    }
+    <span class="hljs-title function_">add</span>(<span class="hljs-number">1</span>)(<span class="hljs-number">1</span>);
+
+    <span class="hljs-comment">// 要实现 体系 = 加工 + 组装， 单个加工的输入输出单值化 =&gt; 单元函数</span>
+    <span class="hljs-keyword">const</span> fetch = <span class="hljs-title function_">ajax</span>(method, url, params);
+
+    <span class="hljs-keyword">const</span> fetch = ajax.<span class="hljs-title function_">get</span>(url);
+    <span class="hljs-keyword">const</span> request = <span class="hljs-title function_">fetch</span>(params);
+
+    <span class="hljs-keyword">const</span> send = <span class="hljs-title function_">ajax</span>(method)(url)(params);
+
+    组合(request, fetch)
+</code></pre>
+<ul>
+<li>面试题：手写构造可拆分传参的累加函数
+add(1)(2)(3)(4)</li>
+</ul>
+<pre><code class="language-js">    <span class="hljs-comment">// 1. 构造科里化结构</span>
+    <span class="hljs-comment">// 2. 输入 处理外层的arguments =&gt; 类数组处理</span>
+    <span class="hljs-comment">// 3. 传入参数无限拓展 =&gt; 内层递归 =&gt; 返回递归函数本身</span>
+    <span class="hljs-comment">// 4. 主功能区</span>
+    <span class="hljs-comment">// 5. 输出 从函数到产出 toString替换</span>
+
+    <span class="hljs-keyword">const</span> add  = <span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) {
+        <span class="hljs-comment">// input</span>
+        <span class="hljs-keyword">let</span> args = <span class="hljs-title class_">Array</span>.<span class="hljs-property"><span class="hljs-keyword">prototype</span></span>.<span class="hljs-property">slice</span>.<span class="hljs-title function_">call</span>(<span class="hljs-variable language_">arguments</span>);
+
+        <span class="hljs-comment">// 内层函数</span>
+        <span class="hljs-keyword">let</span> inner = <span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) {
+            args.<span class="hljs-title function_">push</span>(...<span class="hljs-variable language_">arguments</span>)
+
+            <span class="hljs-keyword">return</span> inner;
+        }
+
+        <span class="hljs-comment">// 主功能</span>
+        inner.<span class="hljs-property">toString</span> = <span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) {
+            <span class="hljs-keyword">return</span> args.<span class="hljs-title function_">reduce</span>(<span class="hljs-function">(<span class="hljs-params">prev, cur</span>) =&gt;</span> {
+                <span class="hljs-keyword">return</span> prev + cur;
+            })
+        }
+
+        <span class="hljs-comment">// 返回</span>
+        <span class="hljs-keyword">return</span> inner;
+    }
+
+    <span class="hljs-string">&#x27;&#x27;</span> + <span class="hljs-title function_">add</span>(<span class="hljs-number">1</span>)(<span class="hljs-number">2</span>)(<span class="hljs-number">3</span>)(<span class="hljs-number">4</span>) <span class="hljs-comment">// 10</span>
+    <span class="hljs-comment">// 如何去调用原来的toString =&gt; .call()</span>
+
+    <span class="hljs-comment">// rx.js =&gt; rx</span>
+    <span class="hljs-comment">// 多来源</span>
+    <span class="hljs-comment">// h5 =&gt; ajax</span>
+    <span class="hljs-comment">// im =&gt; socket</span>
+    <span class="hljs-comment">// toolbar =&gt; bridge</span>
+    <span class="hljs-comment">// channel =&gt; webRTC</span>
+</code></pre>
+<h5 id="b-流水线---组装函数">b. 流水线 - 组装函数</h5>
+<pre><code class="language-js">    <span class="hljs-keyword">const</span> <span class="hljs-title function_">compose</span> = (<span class="hljs-params">f, g</span>) =&gt; <span class="hljs-function"><span class="hljs-params">x</span> =&gt;</span> <span class="hljs-title function_">f</span>(<span class="hljs-title function_">g</span>(x));
+
+    <span class="hljs-keyword">const</span> <span class="hljs-title function_">sum1</span> = x =&gt; x + <span class="hljs-number">1</span>;
+    <span class="hljs-keyword">const</span> <span class="hljs-title function_">sum2</span> = x =&gt; x + <span class="hljs-number">2</span>;
+    <span class="hljs-keyword">const</span> sum12 = <span class="hljs-title function_">compose</span>(sum2, sum1);
+    <span class="hljs-title function_">sum12</span>(<span class="hljs-number">1</span>);
+</code></pre>
+<ul>
+<li>实际实现使用</li>
+</ul>
+<pre><code class="language-js">    <span class="hljs-comment">// 命令式</span>
+    <span class="hljs-title function_">trim</span>(<span class="hljs-title function_">reverse</span>(<span class="hljs-title function_">toUpperCase</span>(<span class="hljs-title function_">map</span>(arr))))
+
+    <span class="hljs-comment">// 面向对象</span>
+    arr.<span class="hljs-title function_">map</span>().<span class="hljs-title function_">toUppercase</span>().<span class="hljs-title function_">reverse</span>().<span class="hljs-title function_">trim</span>()
+
+    <span class="hljs-comment">// 函数式</span>
+    <span class="hljs-keyword">const</span> result = <span class="hljs-title function_">compose</span>(trim, reverse, toUpperCase, map)
+</code></pre>
+<h3 id="四函子">四、函子</h3>
+<pre><code class="language-js">    <span class="hljs-comment">// 一封情书</span>
+    <span class="hljs-keyword">class</span> <span class="hljs-title class_">Mail</span> {
+        <span class="hljs-title function_">constructor</span>(<span class="hljs-params">content</span>) {
+            <span class="hljs-variable language_">this</span>.<span class="hljs-property">content</span> = content;
+        }
+        <span class="hljs-title function_">map</span>(<span class="hljs-params">fn</span>) {
+            <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">Mail</span>(
+                <span class="hljs-title function_">fn</span>(<span class="hljs-variable language_">this</span>.<span class="hljs-property">content</span>)
+            )
+        }
+    }
+
+    <span class="hljs-comment">// 1. 写情书</span>
+    <span class="hljs-keyword">let</span> mail1 = <span class="hljs-keyword">new</span> <span class="hljs-title class_">Mail</span>(<span class="hljs-string">&#x27;love&#x27;</span>)
+
+    <span class="hljs-comment">// 2. 读了信</span>
+    <span class="hljs-keyword">let</span> mail2 = mail1.<span class="hljs-title function_">map</span>(<span class="hljs-keyword">function</span>(<span class="hljs-params">mail</span>) {
+        <span class="hljs-keyword">return</span> <span class="hljs-title function_">read</span>(mail);
+    })
+
+    <span class="hljs-comment">// 3. 涂抹</span>
+    <span class="hljs-keyword">let</span> mail3 = mail2.<span class="hljs-title function_">map</span>(<span class="hljs-keyword">function</span>(<span class="hljs-params">mail</span>) {
+        <span class="hljs-keyword">return</span> <span class="hljs-title function_">cross</span>(mail);
+    })
+
+    <span class="hljs-comment">// 4. 后置</span>
+    mail3.<span class="hljs-title function_">map</span>(<span class="hljs-keyword">function</span>(<span class="hljs-params">mail</span>) {
+        <span class="hljs-keyword">return</span> <span class="hljs-title function_">read</span>(mail);
+    })
+
+    <span class="hljs-comment">// 链式</span>
+    <span class="hljs-keyword">new</span> <span class="hljs-title class_">Mail</span>(<span class="hljs-string">&#x27;love&#x27;</span>).<span class="hljs-title function_">map</span>(read).<span class="hljs-title function_">map</span>(cross).<span class="hljs-title function_">map</span>(read)
+
+    <span class="hljs-comment">// Functor遵守了特定数据协议</span>
+    <span class="hljs-comment">// 具有一个通用map方法，返回新实例</span>
+    <span class="hljs-comment">// 结合外部的解码运算能力，处理 =&gt; 管道中不同层级又很纯净的单元操作</span>
+</code></pre>
+
+        <script async src="https://cdn.jsdelivr.net/npm/katex-copytex@latest/dist/katex-copytex.min.js"></script>
+        
+    </body>
+    </html>
